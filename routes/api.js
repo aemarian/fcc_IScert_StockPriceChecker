@@ -25,7 +25,7 @@ async function saveStock(stock, like, ip) {
     saved = createsaved;
     return saved;
   } else {
-    if (like && foundStock.likes.indexOf(ip) == -1) {
+    if (like && foundStock.likes.indexOf(ip) === -1) {
       foundStock.likes.push(ip);
     }
     saved = await foundStock.save();
@@ -47,6 +47,8 @@ module.exports = function (app) {
     .get(async function (req, res){
       const { stock, like } = req.query;
       if (Array.isArray(stock)) {
+        console.log("stocks", stock);
+
         const { symbol, latestPrice } = await getStock(stock[0]);
         const { symbol: symbol2, latestPrice: latestPrice2 } = await getStock(
           stock[1]
@@ -67,6 +69,7 @@ module.exports = function (app) {
             rel_likes: firststock.likes.length - secondstock.likes.length,
           })
         }
+        
         if (!symbol2) {
           stockData.push({
             rel_likes: secondstock.likes.length - firststock.likes.length,
@@ -84,12 +87,15 @@ module.exports = function (app) {
         });
         return;
       }
+
       const { symbol, latestPrice } = await getStock(stock);
       if (!symbol) {
         res.json({ stockData: { likes: like ? 1 : 0} });
+        return;
       }
 
       const oneStockData = await saveStock(symbol, like, req.ip);
+      console.log("One Stock Data", oneStockData);
 
       res.json({
          stockData: {
