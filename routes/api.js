@@ -22,7 +22,7 @@ async function saveStock(stock, like, ip) {
   const foundStock = await findStock(stock);
   if (!foundStock) {
     const createsaved = await createStock(stock, like, ip);
-    saved = creatsaved;
+    saved = createsaved;
     return saved;
   } else {
     if (like && foundStock.likes.indexOf(ip) == -1) {
@@ -42,8 +42,6 @@ async function getStock(stock) {
 }
 
 module.exports = function (app) {
-
-// https://stock-price-checker-proxy.freecodecamp.rocks/
 
   app.route('/api/stock-prices')
     .get(async function (req, res){
